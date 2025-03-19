@@ -1,5 +1,5 @@
 resource "aws_instance" "web" {
-  ami                         = "ami-0c1d1a95a800c0243"
+  ami                         = "ami-039a0a36e50f80262"
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.public_subnet.id
   associate_public_ip_address = true
@@ -14,6 +14,11 @@ resource "aws_instance" "web" {
   tags = merge(local.common_tags, {
     Name = "Nginx Instance"
   })
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [ tags ]
+  }
 }
 
 resource "aws_security_group" "public_http_traffic" {
