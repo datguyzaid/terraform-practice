@@ -92,6 +92,18 @@ This document provides a quick reference for common Terraform commands used to i
 
 ---
 
+## Meta Arguments
+- depends_on: used to explicitly define dependencies between resources
+- count & for-each: allow creation of multiple resources of the same type without having to declare separate resource blocks
+- provider: allows defining explicitly which provider to use with a sepcific resource
+- lifecycle: 
+  - create_before_destroy: prevents tf's default behaviour of destroying before creating for resources that cannot be updated in place (most of them)
+  - prevent_destroy: terraform will not destroy and exit with an error if planned changes would lead to destruction of the the resource which is marked with this
+  - replace_triggered_by: replaces the resource when any of the referenced items change
+  - ignore_changes: we can provide a list of attributes that should not trigger an update when modified outside terraform
+  
+---
+
 ## Example Workflow
 1. Initialize: `terraform init`
 2. Format: `terraform fmt -recursive`
