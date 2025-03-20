@@ -83,6 +83,12 @@ This document provides a quick reference for common Terraform commands used to i
 - **`terraform state list`**  
   Lists all resources currently managed by Terraform in the state file.
 
+- **`terraform ouput`**  
+  Shows all ouputs (if configured).
+
+- **`terraform ouput key`**  
+  Diplays ouput of the (`key`) .
+  
 ---
 
 ## Notes
