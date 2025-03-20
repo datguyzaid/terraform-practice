@@ -1,18 +1,3 @@
-data "aws_ami" "ubuntu" {
-  most_recent = true
-  owners      = ["099720109477"] # Owner is Canonical
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-*-22.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
-
 resource "aws_instance" "web" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
@@ -45,3 +30,52 @@ resource "aws_vpc_security_group_ingress_rule" "https" {
   to_port           = 443
   ip_protocol       = "TCP"
 }
+
+resource "aws_s3_bucket" "public_read_bucket" {
+  bucket = "my-public-read-bucket"
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["099720109477"] # Owner is Canonical
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-*-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+data "aws_vpc" "prod_vpc" {
+  tags = {
+    Enviroment = "Production"
+  }
+}
+
+data "aws_iam_policy_document" "static_website" {
+  statement {
+    sid = "PublicReadGetObject"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["s3:GetObject"]
+
+    resources = ["${aws_s3_bucket.public_read_bucket.arn}/*"]
+  }
+}
+
